@@ -9,14 +9,37 @@
 
     <form action="/add" method="post">
         <input type="text" name="description" placeholder="Co jest do zrobienia?" required>
+        
+        <select name="userId">
+            <option value="">-- Bez przypisania --</option>
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+        </select>
+
         <button type="submit">Dodaj zadanie</button>
     </form>
 
     <hr>
 
     <ul>
-        <li th:each="task : ${tasks}">
-            <span th:text="${task.description}"></span>
+        <li th:each="task : ${tasks}" style="margin-bottom: 10px;">
+            
+            <span th:text="${task.description}" 
+                  th:style="${task.completed} ? 'text-decoration: line-through; color: gray;' : ''">
+            </span>
+
+            <strong th:if="${task.assignedUser != null}" 
+                    th:text="' (Przypisane do: ' + ${task.assignedUser.name} + ')'"
+                    th:style="${task.completed} ? 'color: gray;' : 'color: blue;'">
+            </strong>
+
+            <form th:action="@{/toggle/{id}(id=${task.id})}" method="post" style="display:inline; margin-left: 10px;">
+                <button type="submit" th:text="${task.completed} ? 'Cofnij' : 'Zrobione'"></button>
+            </form>
+
+            <form th:action="@{/delete/{id}(id=${task.id})}" method="post" style="display:inline;">
+                <button type="submit">Usuń</button>
+            </form>
+            
         </li>
     </ul>
 
