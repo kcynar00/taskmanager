@@ -14,19 +14,24 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register", "/css/**").permitAll() // Rejestracja jest publiczna
-                .anyRequest().authenticated() // Reszta (w tym "/") wymaga logowania
+     http
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/login", "/register", "/css/**").permitAll()
+            .requestMatchers("/add", "/toggle/**").hasAnyRole("USER", "MANAGER", "ADMIN") // Wszyscy mogą dodawać/klikać
+            .requestMatchers("/delete/**").hasAnyRole("MANAGER", "ADMIN") // Tylko szefowie usuwają (lub Twoja logika z kontrolera)
+            .anyRequest().authenticated()
+        )
+         .formLogin(form -> form
+            .loginPage("/login") // Nasza własna strona logowania
+            .defaultSuccessUrl("/", true) // Po zalogowaniu rzucamy na stronę główną
+            .permitAll()
             )
-            .formLogin(form -> form
-                .loginPage("/login") // Nasza własna strona logowania
-                .defaultSuccessUrl("/", true) // Po zalogowaniu rzucamy na stronę główną
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
-                .permitAll()
+          .logout(logout -> logout
+            .logoutUrl("/logout") // Adres, na który wysyłamy POST z HTML
+            .logoutSuccessUrl("/login?logout") // Gdzie przekierować po wyjściu
+            .invalidateHttpSession(true) // Czyścimy sesję
+            .deleteCookies("JSESSIONID") // Usuwamy ciasteczka
+            .permitAll()
             );
 
         return http.build();

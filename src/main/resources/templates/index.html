@@ -6,8 +6,20 @@
 </head>
 <body>
     <h1>Mój Task Manager</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; background: #f4f4f4; padding: 10px;">
+    <div>
+        Zalogowany jako: <strong th:text="${currentUser.username}"></strong> 
+        [<span th:text="${currentUser.role}"></span>]
+    </div>
 
-    <form action="/add" method="post">
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" style="background-color: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+            Wyloguj się
+        </button>
+    </form>
+</div>
+
+    <form th:action="@{/add}" method="post">
         <input type="text" name="description" placeholder="Co jest do zrobienia?" required>
         
         <select name="userId" th:if="${currentUser.role == 'ADMIN' or currentUser.role == 'MANAGER'}">
@@ -48,5 +60,6 @@
             
         </li>
     </ul>
+    
 </body>
 </html>

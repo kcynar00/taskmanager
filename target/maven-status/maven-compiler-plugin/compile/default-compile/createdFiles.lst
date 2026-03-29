@@ -1,0 +1,10 @@
+com\taskmngr\release\config\SecurityConfig.class
+com\taskmngr\release\controller\AuthController.class
+com\taskmngr\release\model\Task.class
+com\taskmngr\release\controller\TaskController.class
+com\taskmngr\release\repository\UserRepository.class
+com\taskmngr\release\repository\TaskRepository.class
+com\taskmngr\release\TaskmngrApplication.class
+com\taskmngr\release\config\CustomUserDetailsService.class
+com\taskmngr\release\model\User.class
+com\taskmngr\release\config\DataSeeder.class

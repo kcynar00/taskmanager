@@ -6,15 +6,27 @@
 </head>
 <body>
     <h1>Mój Task Manager</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; background: #f4f4f4; padding: 10px;">
+    <div>
+        Zalogowany jako: <strong th:text="${currentUser.username}"></strong> 
+        [<span th:text="${currentUser.role}"></span>]
+    </div>
 
-    <form action="/add" method="post">
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" style="background-color: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+            Wyloguj się
+        </button>
+    </form>
+</div>
+
+    <form th:action="@{/add}" method="post">
         <input type="text" name="description" placeholder="Co jest do zrobienia?" required>
         
-        <select name="userId">
-            <option value="">-- Bez przypisania --</option>
-            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+        <select name="userId" th:if="${currentUser.role == 'ADMIN' or currentUser.role == 'MANAGER'}">
+            <option value="">-- Wybierz pracownika --</option>
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
         </select>
-
+        
         <button type="submit">Dodaj zadanie</button>
     </form>
 
@@ -23,12 +35,17 @@
     <ul>
         <li th:each="task : ${tasks}" style="margin-bottom: 10px;">
             
+            <span th:if="${task.creator != null and task.creator.id != currentUser.id}" 
+                  style="color: red; font-weight: bold; margin-right: 5px;">
+                [Zlecone przez: <span th:text="${task.creator.username}"></span>]
+            </span>
+
             <span th:text="${task.description}" 
                   th:style="${task.completed} ? 'text-decoration: line-through; color: gray;' : ''">
             </span>
 
             <strong th:if="${task.assignedUser != null}" 
-                    th:text="' (Przypisane do: ' + ${task.assignedUser.name} + ')'"
+                    th:text="' (Przypisane do: ' + ${task.assignedUser.username} + ')'"
                     th:style="${task.completed} ? 'color: gray;' : 'color: blue;'">
             </strong>
 
@@ -36,12 +53,13 @@
                 <button type="submit" th:text="${task.completed} ? 'Cofnij' : 'Zrobione'"></button>
             </form>
 
-            <form th:action="@{/delete/{id}(id=${task.id})}" method="post" style="display:inline;">
+            <form th:if="${currentUser.role == 'ADMIN' or currentUser.role == 'MANAGER' or (task.creator != null and task.creator.id == currentUser.id)}" 
+                  th:action="@{/delete/{id}(id=${task.id})}" method="post" style="display:inline;">
                 <button type="submit">Usuń</button>
             </form>
             
         </li>
     </ul>
-
+    
 </body>
 </html>

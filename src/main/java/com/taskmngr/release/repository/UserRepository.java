@@ -1,12 +1,11 @@
 package com.taskmngr.release.repository;
 
-import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.taskmngr.release.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Zwraca wszystkich użytkowników podlegających pod konkretnego menedżera
+    Optional<User> findByUsername(String username);
     List<User> findByManager(User manager);
 }

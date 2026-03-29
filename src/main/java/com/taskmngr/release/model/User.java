@@ -14,13 +14,14 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String login;   
-   
-    @Column(nullable = false)
     private String password;
     
     @Column(nullable = false)
     private String role = "USER";
+
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private User manager;
 
     public User() {}
 
@@ -33,10 +34,10 @@ public class User {
     public void setId(Long id) { this.id = id; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
-    public String getLogin() { return login; }
-    public void setLogin(String login) { this.login = login; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-    public String getRole() { return roles; }
-    public void setRole(String roles) { this.roles = roles; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    public User getManager() { return manager; }
+    public void setManager(User manager) { this.manager = manager; }
 }
