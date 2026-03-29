@@ -15,6 +15,9 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;   
     
     private String description;
     
@@ -40,4 +43,7 @@ public class Task {
 
     public User getAssignedUser() { return assignedUser; }
     public void setAssignedUser(User assignedUser) { this.assignedUser = assignedUser; }
+
+    public User getCreator() { return creator; }
+    public void setCreator(User creator) { this.creator = creator; }
 }
